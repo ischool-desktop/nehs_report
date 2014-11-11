@@ -57,6 +57,15 @@ namespace ClassStudentScoreReport_P
         private void formClassScore_Load(object sender, EventArgs e)
         {
             this.MaximumSize = this.MinimumSize = this.Size;
+
+            // 畫面預設値
+            int sy,ss;
+            if(int.TryParse(K12.Data.School.DefaultSchoolYear,out sy))
+                iptSchoolYear.Value = sy;
+
+            if (int.TryParse(K12.Data.School.DefaultSemester, out ss))
+                iptSemester.Value = ss;
+
         }
     }
 }

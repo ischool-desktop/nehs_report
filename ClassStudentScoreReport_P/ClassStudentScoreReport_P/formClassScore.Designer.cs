@@ -48,10 +48,13 @@
             this.iptSchoolYear.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.iptSchoolYear.ButtonFreeText.Shortcut = DevComponents.DotNetBar.eShortcut.F2;
             this.iptSchoolYear.Location = new System.Drawing.Point(74, 19);
+            this.iptSchoolYear.MaxValue = 1000;
+            this.iptSchoolYear.MinValue = 1;
             this.iptSchoolYear.Name = "iptSchoolYear";
             this.iptSchoolYear.ShowUpDown = true;
             this.iptSchoolYear.Size = new System.Drawing.Size(80, 25);
             this.iptSchoolYear.TabIndex = 0;
+            this.iptSchoolYear.Value = 1;
             // 
             // iptSemester
             // 
@@ -63,10 +66,13 @@
             this.iptSemester.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.iptSemester.ButtonFreeText.Shortcut = DevComponents.DotNetBar.eShortcut.F2;
             this.iptSemester.Location = new System.Drawing.Point(213, 19);
+            this.iptSemester.MaxValue = 2;
+            this.iptSemester.MinValue = 1;
             this.iptSemester.Name = "iptSemester";
             this.iptSemester.ShowUpDown = true;
             this.iptSemester.Size = new System.Drawing.Size(80, 25);
             this.iptSemester.TabIndex = 1;
+            this.iptSemester.Value = 1;
             // 
             // labelX1
             // 
