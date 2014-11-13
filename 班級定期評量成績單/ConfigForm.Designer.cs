@@ -50,6 +50,7 @@
             this.cboConfigure = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.linkLabel4 = new System.Windows.Forms.LinkLabel();
             this.linkLabel3 = new System.Windows.Forms.LinkLabel();
+            this.linkLabel5 = new System.Windows.Forms.LinkLabel();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.labelX9 = new DevComponents.DotNetBar.LabelX();
@@ -65,7 +66,6 @@
             this.btnCancel = new DevComponents.DotNetBar.ButtonX();
             this.panel4 = new System.Windows.Forms.Panel();
             this.circularProgress1 = new DevComponents.DotNetBar.Controls.CircularProgress();
-            this.linkLabel5 = new System.Windows.Forms.LinkLabel();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -343,7 +343,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 509F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(784, 509);
             this.tableLayoutPanel1.TabIndex = 11;
             // 
@@ -414,6 +414,18 @@
             this.linkLabel3.TabStop = true;
             this.linkLabel3.Text = "複製設定檔";
             this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked);
+            // 
+            // linkLabel5
+            // 
+            this.linkLabel5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.linkLabel5.AutoSize = true;
+            this.linkLabel5.Location = new System.Drawing.Point(267, 483);
+            this.linkLabel5.Name = "linkLabel5";
+            this.linkLabel5.Size = new System.Drawing.Size(112, 17);
+            this.linkLabel5.TabIndex = 11;
+            this.linkLabel5.TabStop = true;
+            this.linkLabel5.Text = "下載合併欄位總表";
+            this.linkLabel5.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel5_LinkClicked);
             // 
             // linkLabel2
             // 
@@ -629,18 +641,6 @@
             this.circularProgress1.Style = DevComponents.DotNetBar.eDotNetBarStyle.Windows7;
             this.circularProgress1.TabIndex = 13;
             // 
-            // linkLabel5
-            // 
-            this.linkLabel5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.linkLabel5.AutoSize = true;
-            this.linkLabel5.Location = new System.Drawing.Point(267, 483);
-            this.linkLabel5.Name = "linkLabel5";
-            this.linkLabel5.Size = new System.Drawing.Size(112, 17);
-            this.linkLabel5.TabIndex = 11;
-            this.linkLabel5.TabStop = true;
-            this.linkLabel5.Text = "下載合併欄位總表";
-            this.linkLabel5.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel5_LinkClicked);
-            // 
             // ConfigForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -653,7 +653,7 @@
             this.DoubleBuffered = true;
             this.MaximizeBox = true;
             this.Name = "ConfigForm";
-            this.Text = "ClassExamReport_nehs";
+            this.Text = "班級定期評量成績單(實中)";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

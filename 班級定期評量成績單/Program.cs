@@ -13,10 +13,14 @@ namespace ClassExamReport_nehs
 {
      public class Program
      {
+
+         // 平均四捨五入位數
+         static int aRd = 1;
+
           [FISCA.MainMethod]
           public static void Main()
           {
-              var btn = K12.Presentation.NLDPanels.Class.RibbonBarItems["資料統計"]["報表"]["成績相關報表"]["班級定期評量成績單(測試版)(實中)"];
+              var btn = K12.Presentation.NLDPanels.Class.RibbonBarItems["資料統計"]["報表"]["成績相關報表"]["班級定期評量成績單(實中)"];
                btn.Enable = false;
                K12.Presentation.NLDPanels.Class.SelectedSourceChanged += delegate { btn.Enable = K12.Presentation.NLDPanels.Class.SelectedSource.Count > 0; };
                btn.Click += new EventHandler(Program_Click);
@@ -92,6 +96,11 @@ namespace ClassExamReport_nehs
                                    selectedStudents.Add(stuRec);
                          }
                     }
+
+                    // 取得學生及格與補考標準
+                    Utility.tmpStudentApplyLimitDict.Clear();
+                    Utility.tmpStudentApplyLimitDict = Utility.GetStudentApplyLimitDict(selectedStudents);
+
                     //建立合併欄位總表
                     DataTable table = new DataTable();
                     #region 所有的合併欄位
@@ -121,6 +130,8 @@ namespace ClassExamReport_nehs
                          table.Columns.Add("座號" + i);
                          table.Columns.Add("學號" + i);
                          table.Columns.Add("姓名" + i);
+                         table.Columns.Add("學生系統編號" + i);
+                         table.Columns.Add("年級" + i);
                     }
 
                     for (int Num = 1; Num <= conf.StudentLimit; Num++)
@@ -233,6 +244,10 @@ namespace ClassExamReport_nehs
                          table.Columns.Add("班組距" + subjectIndex + "count30Down"); table.Columns.Add("科組距" + subjectIndex + "count30Down"); table.Columns.Add("校組距" + subjectIndex + "count30Down"); table.Columns.Add("類1組距" + subjectIndex + "count30Down"); table.Columns.Add("類2組距" + subjectIndex + "count30Down");
                          table.Columns.Add("班組距" + subjectIndex + "count20Down"); table.Columns.Add("科組距" + subjectIndex + "count20Down"); table.Columns.Add("校組距" + subjectIndex + "count20Down"); table.Columns.Add("類1組距" + subjectIndex + "count20Down"); table.Columns.Add("類2組距" + subjectIndex + "count20Down");
                          table.Columns.Add("班組距" + subjectIndex + "count10Down"); table.Columns.Add("科組距" + subjectIndex + "count10Down"); table.Columns.Add("校組距" + subjectIndex + "count10Down"); table.Columns.Add("類1組距" + subjectIndex + "count10Down"); table.Columns.Add("類2組距" + subjectIndex + "count10Down");
+
+                         // 新增班及格人數、率
+                         table.Columns.Add("班及格人數" + subjectIndex);
+                         table.Columns.Add("班及格率" + subjectIndex);
                     }
                     #endregion
                     table.Columns.Add("總分班高標"); table.Columns.Add("總分科高標"); table.Columns.Add("總分校高標"); table.Columns.Add("平均班高標"); table.Columns.Add("平均科高標"); table.Columns.Add("平均校高標"); table.Columns.Add("加權總分班高標"); table.Columns.Add("加權總分科高標"); table.Columns.Add("加權總分校高標"); table.Columns.Add("加權平均班高標"); table.Columns.Add("加權平均科高標"); table.Columns.Add("加權平均校高標"); table.Columns.Add("類1總分高標"); table.Columns.Add("類1平均高標"); table.Columns.Add("類1加權總分高標"); table.Columns.Add("類1加權平均高標"); table.Columns.Add("類2總分高標"); table.Columns.Add("類2平均高標"); table.Columns.Add("類2加權總分高標"); table.Columns.Add("類2加權平均高標");
@@ -727,7 +742,7 @@ namespace ClassExamReport_nehs
                                                   //總分
                                                   studentPrintSubjectSum.Add(studentID, printSubjectSum);
                                                   //平均四捨五入至小數點第二位
-                                                  studentPrintSubjectAvg.Add(studentID, Math.Round(printSubjectSum / printSubjectCount, 2, MidpointRounding.AwayFromZero));
+                                                  studentPrintSubjectAvg.Add(studentID, Math.Round(printSubjectSum / printSubjectCount, aRd, MidpointRounding.AwayFromZero));
                                                   if (rank && studentRec.Status == "一般" && summaryRank == true)//不在過濾名單且沒有特殊成績狀況且為一般生才做排名
                                                   {
                                                        //總分班排名
@@ -752,19 +767,19 @@ namespace ClassExamReport_nehs
                                                        key = "平均班排名" + studentRec.RefClass.ClassID;
                                                        if (!ranks.ContainsKey(key)) ranks.Add(key, new List<decimal>());
                                                        if (!rankStudents.ContainsKey(key)) rankStudents.Add(key, new List<string>());
-                                                       ranks[key].Add(Math.Round(printSubjectSum / printSubjectCount, 2, MidpointRounding.AwayFromZero));
+                                                       ranks[key].Add(Math.Round(printSubjectSum / printSubjectCount, aRd, MidpointRounding.AwayFromZero));
                                                        rankStudents[key].Add(studentID);
                                                        //平均科排名
                                                        key = "平均科排名" + studentRec.Department + "^^^" + gradeyear;
                                                        if (!ranks.ContainsKey(key)) ranks.Add(key, new List<decimal>());
                                                        if (!rankStudents.ContainsKey(key)) rankStudents.Add(key, new List<string>());
-                                                       ranks[key].Add(Math.Round(printSubjectSum / printSubjectCount, 2, MidpointRounding.AwayFromZero));
+                                                       ranks[key].Add(Math.Round(printSubjectSum / printSubjectCount, aRd, MidpointRounding.AwayFromZero));
                                                        rankStudents[key].Add(studentID);
                                                        //平均全校排名
                                                        key = "平均全校排名" + gradeyear;
                                                        if (!ranks.ContainsKey(key)) ranks.Add(key, new List<decimal>());
                                                        if (!rankStudents.ContainsKey(key)) rankStudents.Add(key, new List<string>());
-                                                       ranks[key].Add(Math.Round(printSubjectSum / printSubjectCount, 2, MidpointRounding.AwayFromZero));
+                                                       ranks[key].Add(Math.Round(printSubjectSum / printSubjectCount, aRd, MidpointRounding.AwayFromZero));
                                                        rankStudents[key].Add(studentID);
                                                   }
                                                   #endregion
@@ -774,7 +789,7 @@ namespace ClassExamReport_nehs
                                                        //加權總分
                                                        studentPrintSubjectSumW.Add(studentID, printSubjectSumW);
                                                        //加權平均四捨五入至小數點第二位
-                                                       studentPrintSubjectAvgW.Add(studentID, Math.Round(printSubjectSumW / printSubjectCreditSum, 2, MidpointRounding.AwayFromZero));
+                                                       studentPrintSubjectAvgW.Add(studentID, Math.Round(printSubjectSumW / printSubjectCreditSum, aRd, MidpointRounding.AwayFromZero));
                                                        if (rank && studentRec.Status == "一般" && summaryRank == true)//不在過濾名單且為一般生才做排名
                                                        {
                                                             //加權總分班排名
@@ -799,19 +814,19 @@ namespace ClassExamReport_nehs
                                                             key = "加權平均班排名" + studentRec.RefClass.ClassID;
                                                             if (!ranks.ContainsKey(key)) ranks.Add(key, new List<decimal>());
                                                             if (!rankStudents.ContainsKey(key)) rankStudents.Add(key, new List<string>());
-                                                            ranks[key].Add(Math.Round(printSubjectSumW / printSubjectCreditSum, 2, MidpointRounding.AwayFromZero));
+                                                            ranks[key].Add(Math.Round(printSubjectSumW / printSubjectCreditSum, aRd, MidpointRounding.AwayFromZero));
                                                             rankStudents[key].Add(studentID);
                                                             //加權平均科排名
                                                             key = "加權平均科排名" + studentRec.Department + "^^^" + gradeyear;
                                                             if (!ranks.ContainsKey(key)) ranks.Add(key, new List<decimal>());
                                                             if (!rankStudents.ContainsKey(key)) rankStudents.Add(key, new List<string>());
-                                                            ranks[key].Add(Math.Round(printSubjectSumW / printSubjectCreditSum, 2, MidpointRounding.AwayFromZero));
+                                                            ranks[key].Add(Math.Round(printSubjectSumW / printSubjectCreditSum, aRd, MidpointRounding.AwayFromZero));
                                                             rankStudents[key].Add(studentID);
                                                             //加權平均全校排名
                                                             key = "加權平均全校排名" + gradeyear;
                                                             if (!ranks.ContainsKey(key)) ranks.Add(key, new List<decimal>());
                                                             if (!rankStudents.ContainsKey(key)) rankStudents.Add(key, new List<string>());
-                                                            ranks[key].Add(Math.Round(printSubjectSumW / printSubjectCreditSum, 2, MidpointRounding.AwayFromZero));
+                                                            ranks[key].Add(Math.Round(printSubjectSumW / printSubjectCreditSum, aRd, MidpointRounding.AwayFromZero));
                                                             rankStudents[key].Add(studentID);
                                                        }
                                                        #endregion
@@ -823,7 +838,7 @@ namespace ClassExamReport_nehs
                                                   //總分
                                                   studentTag1SubjectSum.Add(studentID, tag1SubjectSum);
                                                   //平均四捨五入至小數點第二位
-                                                  studentTag1SubjectAvg.Add(studentID, Math.Round(tag1SubjectSum / tag1SubjectCount, 2, MidpointRounding.AwayFromZero));
+                                                  studentTag1SubjectAvg.Add(studentID, Math.Round(tag1SubjectSum / tag1SubjectCount, aRd, MidpointRounding.AwayFromZero));
                                                   if (rank && studentRec.Status == "一般" && tag1SummaryRank == true)//不在過濾名單且為一般生才做排名
                                                   {
                                                        key = "類別1總分排名" + "^^^" + gradeyear + "^^^" + tag1ID;
@@ -835,14 +850,14 @@ namespace ClassExamReport_nehs
                                                        key = "類別1平均排名" + "^^^" + gradeyear + "^^^" + tag1ID;
                                                        if (!ranks.ContainsKey(key)) ranks.Add(key, new List<decimal>());
                                                        if (!rankStudents.ContainsKey(key)) rankStudents.Add(key, new List<string>());
-                                                       ranks[key].Add(Math.Round(tag1SubjectSum / tag1SubjectCount, 2, MidpointRounding.AwayFromZero));
+                                                       ranks[key].Add(Math.Round(tag1SubjectSum / tag1SubjectCount, aRd, MidpointRounding.AwayFromZero));
                                                        rankStudents[key].Add(studentID);
                                                   }
                                                   //類別1加權總分平均排名
                                                   if (tag1SubjectCreditSum > 0)
                                                   {
                                                        studentTag1SubjectSumW.Add(studentID, tag1SubjectSumW);
-                                                       studentTag1SubjectAvgW.Add(studentID, Math.Round(tag1SubjectSumW / tag1SubjectCreditSum, 2, MidpointRounding.AwayFromZero));
+                                                       studentTag1SubjectAvgW.Add(studentID, Math.Round(tag1SubjectSumW / tag1SubjectCreditSum, aRd, MidpointRounding.AwayFromZero));
                                                        if (rank && studentRec.Status == "一般" && tag1SummaryRank == true)//不在過濾名單且為一般生才做排名
                                                        {
                                                             key = "類別1加權總分排名" + "^^^" + gradeyear + "^^^" + tag1ID;
@@ -854,7 +869,7 @@ namespace ClassExamReport_nehs
                                                             key = "類別1加權平均排名" + "^^^" + gradeyear + "^^^" + tag1ID;
                                                             if (!ranks.ContainsKey(key)) ranks.Add(key, new List<decimal>());
                                                             if (!rankStudents.ContainsKey(key)) rankStudents.Add(key, new List<string>());
-                                                            ranks[key].Add(Math.Round(tag1SubjectSumW / tag1SubjectCreditSum, 2, MidpointRounding.AwayFromZero));
+                                                            ranks[key].Add(Math.Round(tag1SubjectSumW / tag1SubjectCreditSum, aRd, MidpointRounding.AwayFromZero));
                                                             rankStudents[key].Add(studentID);
                                                        }
                                                   }
@@ -865,7 +880,7 @@ namespace ClassExamReport_nehs
                                                   //總分
                                                   studentTag2SubjectSum.Add(studentID, tag2SubjectSum);
                                                   //平均四捨五入至小數點第二位
-                                                  studentTag2SubjectAvg.Add(studentID, Math.Round(tag2SubjectSum / tag2SubjectCount, 2, MidpointRounding.AwayFromZero));
+                                                  studentTag2SubjectAvg.Add(studentID, Math.Round(tag2SubjectSum / tag2SubjectCount, aRd, MidpointRounding.AwayFromZero));
                                                   if (rank && studentRec.Status == "一般" && tag2SummaryRank == true)//不在過濾名單且為一般生才做排名
                                                   {
                                                        key = "類別2總分排名" + "^^^" + gradeyear + "^^^" + tag2ID;
@@ -876,14 +891,14 @@ namespace ClassExamReport_nehs
                                                        key = "類別2平均排名" + "^^^" + gradeyear + "^^^" + tag2ID;
                                                        if (!ranks.ContainsKey(key)) ranks.Add(key, new List<decimal>());
                                                        if (!rankStudents.ContainsKey(key)) rankStudents.Add(key, new List<string>());
-                                                       ranks[key].Add(Math.Round(tag2SubjectSum / tag2SubjectCount, 2, MidpointRounding.AwayFromZero));
+                                                       ranks[key].Add(Math.Round(tag2SubjectSum / tag2SubjectCount, aRd, MidpointRounding.AwayFromZero));
                                                        rankStudents[key].Add(studentID);
                                                   }
                                                   //類別2加權總分平均排名
                                                   if (tag2SubjectCreditSum > 0)
                                                   {
                                                        studentTag2SubjectSumW.Add(studentID, tag2SubjectSumW);
-                                                       studentTag2SubjectAvgW.Add(studentID, Math.Round(tag2SubjectSumW / tag2SubjectCreditSum, 2, MidpointRounding.AwayFromZero));
+                                                       studentTag2SubjectAvgW.Add(studentID, Math.Round(tag2SubjectSumW / tag2SubjectCreditSum, aRd, MidpointRounding.AwayFromZero));
                                                        if (rank && studentRec.Status == "一般" && tag2SummaryRank == true)//不在過濾名單且為一般生才做排名
                                                        {
                                                             key = "類別2加權總分排名" + "^^^" + gradeyear + "^^^" + tag2ID;
@@ -895,7 +910,7 @@ namespace ClassExamReport_nehs
                                                             key = "類別2加權平均排名" + "^^^" + gradeyear + "^^^" + tag2ID;
                                                             if (!ranks.ContainsKey(key)) ranks.Add(key, new List<decimal>());
                                                             if (!rankStudents.ContainsKey(key)) rankStudents.Add(key, new List<string>());
-                                                            ranks[key].Add(Math.Round(tag2SubjectSumW / tag2SubjectCreditSum, 2, MidpointRounding.AwayFromZero));
+                                                            ranks[key].Add(Math.Round(tag2SubjectSumW / tag2SubjectCreditSum, aRd, MidpointRounding.AwayFromZero));
                                                             rankStudents[key].Add(studentID);
                                                        }
                                                   }
@@ -934,8 +949,8 @@ namespace ClassExamReport_nehs
                                              count--;
                                         }
                                         #endregion
-                                        analytics.Add(k + "^^^高標", Math.Round(rankscores.GetRange(0, count).Average(), 2, MidpointRounding.AwayFromZero));
-                                        analytics.Add(k + "^^^均標", Math.Round(rankscores.Average(), 2, MidpointRounding.AwayFromZero));
+                                        analytics.Add(k + "^^^高標", Math.Round(rankscores.GetRange(0, count).Average(), aRd, MidpointRounding.AwayFromZero));
+                                        analytics.Add(k + "^^^均標", Math.Round(rankscores.Average(), aRd, MidpointRounding.AwayFromZero));
                                         #region 算低標的中點
                                         middleIndex = rankscores.Count - 1;
                                         count = 1;
@@ -956,13 +971,13 @@ namespace ClassExamReport_nehs
                                              count--;
                                         }
                                         #endregion
-                                        analytics.Add(k + "^^^低標", Math.Round(rankscores.GetRange(middleIndex, count).Average(), 2, MidpointRounding.AwayFromZero));
+                                        analytics.Add(k + "^^^低標", Math.Round(rankscores.GetRange(middleIndex, count).Average(), aRd, MidpointRounding.AwayFromZero));
                                         //Compute the Average      
                                         var avg = (double)rankscores.Average();
                                         //Perform the Sum of (value-avg)_2_2      
                                         var sum = (double)rankscores.Sum(d => Math.Pow((double)d - avg, 2));
                                         //Put it all together      
-                                        analytics.Add(k + "^^^標準差", Math.Round((decimal)Math.Sqrt((sum) / rankscores.Count()), 2, MidpointRounding.AwayFromZero));
+                                        analytics.Add(k + "^^^標準差", Math.Round((decimal)Math.Sqrt((sum) / rankscores.Count()), aRd, MidpointRounding.AwayFromZero));
                                    }
                                    #region 計算級距
                                    int count90 = 0, count80 = 0, count70 = 0, count60 = 0, count50 = 0, count40 = 0, count30 = 0, count20 = 0, count10 = 0;
@@ -1047,6 +1062,7 @@ namespace ClassExamReport_nehs
                               elseReady.WaitOne();
                               bkw.ReportProgress(70);
                               progressCount = 0;
+                             
                               #region 填入資料表
                               foreach (ClassRecord classRec in selectedClasses)
                               {
@@ -1069,7 +1085,49 @@ namespace ClassExamReport_nehs
                                    row["定期評量"] = conf.ExamRecord.Name;
                                    row["班導師"] = classRec.RefTeacher == null ? "" : classRec.RefTeacher.TeacherName;
                                    int ClassStuNum = 0;
+
+                                  // 取得班級學生ID與平均班排
+                                   Dictionary<int, List<StudentRecord>> rnkDict =new Dictionary<int,List<StudentRecord>> ();
+                                  List<StudentRecord> sortStudentList = new List<StudentRecord> ();
+ 
+                                  rnkDict.Add(99, new List<StudentRecord>());
+
                                    foreach (StudentRecord stuRec in classRec.Students)
+                                   {
+                                       string key1 = "平均班排名" + classRec.ClassID;
+                                       if (rankStudents.ContainsKey(key1) && rankStudents[key1].Contains(stuRec.StudentID))//明確判斷學生是否參與排名
+                                       {
+                                           int rnk = ranks[key1].IndexOf(studentPrintSubjectAvg[stuRec.StudentID]) + 1;
+                                           if (!rnkDict.ContainsKey(rnk))
+                                               rnkDict.Add(rnk, new List<StudentRecord>());
+
+                                           rnkDict[rnk].Add(stuRec);
+                                       }
+                                       else
+                                       {
+                                           rnkDict[99].Add(stuRec);
+                                       }
+                                   
+                                   }
+
+                                  // 排序
+                                   List<int> rnkList = rnkDict.Keys.ToList();
+                                   rnkList.Sort();
+
+                                   foreach (int ii in rnkList)
+                                   {
+                                       if (rnkDict.ContainsKey(ii))
+                                       {
+                                           foreach (StudentRecord ss in rnkDict[ii])
+                                           {
+                                               sortStudentList.Add(ss);
+                                           }
+                                       }
+                                   }
+
+
+                                  // foreach (StudentRecord stuRec in classRec.Students)
+                                   foreach (StudentRecord stuRec in sortStudentList)
                                    {
                                         string studentID = stuRec.StudentID;
                                         ClassStuNum++;
@@ -1079,6 +1137,8 @@ namespace ClassExamReport_nehs
                                                   overflowRecords.Add(classRec);
                                              break;
                                         }
+                                        row["學生系統編號" + ClassStuNum] = stuRec.StudentID;
+                                        row["年級" + ClassStuNum] = stuRec.RefClass.GradeYear;
                                         row["座號" + ClassStuNum] = stuRec.SeatNo;
                                         row["學號" + ClassStuNum] = stuRec.StudentNumber;
                                         row["姓名" + ClassStuNum] = stuRec.StudentName;
@@ -1169,12 +1229,22 @@ namespace ClassExamReport_nehs
                                                   if (conf.PrintSubjectList.Contains(subjectName))
                                                   {
                                                        ClassStuNum = 0;
-                                                       foreach (StudentRecord stuRec in classRec.Students)
+                                                       foreach (StudentRecord stuRec in sortStudentList)
                                                        {
                                                             ClassStuNum++;
                                                             if (ClassStuNum > conf.StudentLimit)
                                                                  break;
                                                             string studentID = stuRec.StudentID;
+
+                                                           // 取得學生及格分數，當有及格標準使用及格標準，沒有就60 分
+                                                            decimal passScore = 60;
+
+                                                            if (Utility.tmpStudentApplyLimitDict.ContainsKey(studentID))
+                                                            { 
+                                                                if(Utility.tmpStudentApplyLimitDict[studentID].ContainsKey(stuRec.RefClass.GradeYear))
+                                                                    passScore=Utility.tmpStudentApplyLimitDict[studentID][stuRec.RefClass.GradeYear];
+                                                            }
+
                                                             if (studentExamSores.ContainsKey(studentID))
                                                             {
                                                                  if (studentExamSores[studentID].ContainsKey(subjectName))
@@ -1187,7 +1257,15 @@ namespace ClassExamReport_nehs
                                                                                 var sceTakeRecord = studentExamSores[studentID][subjectName][courseID];
                                                                                 if (sceTakeRecord != null)
                                                                                 {//有輸入
-                                                                                     row["科目成績" + ClassStuNum + "-" + subjectIndex] = sceTakeRecord.SpecialCase == "" ? ("" + sceTakeRecord.ExamScore) : sceTakeRecord.SpecialCase;
+                                                                                    
+                                                                                    decimal ss;
+                                                                                    string strScore = sceTakeRecord.SpecialCase == "" ? ("" + sceTakeRecord.ExamScore) : sceTakeRecord.SpecialCase; 
+                                                                                    if(decimal.TryParse(strScore,out ss))
+                                                                                    {
+                                                                                        if (ss < passScore)
+                                                                                            strScore = "*" + ss;
+                                                                                    }
+                                                                                     row["科目成績" + ClassStuNum + "-" + subjectIndex] = strScore;
                                                                                      #region 班排名及落點分析
                                                                                      if (stuRec.RefClass != null)
                                                                                      {
@@ -1549,7 +1627,7 @@ namespace ClassExamReport_nehs
                                    #endregion
                                    #region 總分
                                    ClassStuNum = 0;
-                                   foreach (StudentRecord stuRec in classRec.Students)
+                                   foreach (StudentRecord stuRec in sortStudentList)
                                    {
                                         ClassStuNum++;
                                         if (ClassStuNum > conf.StudentLimit)
@@ -1698,7 +1776,7 @@ namespace ClassExamReport_nehs
                                    #endregion
                                    #region 平均
                                    ClassStuNum = 0;
-                                   foreach (StudentRecord stuRec in classRec.Students)
+                                   foreach (StudentRecord stuRec in sortStudentList)
                                    {
                                         ClassStuNum++;
                                         if (ClassStuNum > conf.StudentLimit)
@@ -1844,7 +1922,7 @@ namespace ClassExamReport_nehs
                                    #endregion
                                    #region 加權總分
                                    ClassStuNum = 0;
-                                   foreach (StudentRecord stuRec in classRec.Students)
+                                   foreach (StudentRecord stuRec in sortStudentList)
                                    {
                                         ClassStuNum++;
                                         if (ClassStuNum > conf.StudentLimit)
@@ -1990,7 +2068,7 @@ namespace ClassExamReport_nehs
                                    #endregion
                                    #region 加權平均
                                    ClassStuNum = 0;
-                                   foreach (StudentRecord stuRec in classRec.Students)
+                                   foreach (StudentRecord stuRec in sortStudentList)
                                    {
                                         ClassStuNum++;
                                         if (ClassStuNum > conf.StudentLimit)
@@ -2136,7 +2214,7 @@ namespace ClassExamReport_nehs
                                    #endregion
                                    #region 類別1綜合成績
                                    ClassStuNum = 0;
-                                   foreach (StudentRecord stuRec in classRec.Students)
+                                   foreach (StudentRecord stuRec in sortStudentList)
                                    {
                                         ClassStuNum++;
                                         if (ClassStuNum > conf.StudentLimit)
@@ -2496,7 +2574,7 @@ namespace ClassExamReport_nehs
                                    #endregion
                                    #region 類別2綜合成績
                                    ClassStuNum = 0;
-                                   foreach (StudentRecord stuRec in classRec.Students)
+                                   foreach (StudentRecord stuRec in sortStudentList)
                                    {
                                         ClassStuNum++;
                                         if (ClassStuNum > conf.StudentLimit)
@@ -2855,12 +2933,24 @@ namespace ClassExamReport_nehs
                                         #endregion
                                    }
                                    #endregion
+
+
+                                 
+
                                    table.Rows.Add(row);
+
                                    progressCount++;
                                    bkw.ReportProgress(70 + progressCount * 20 / selectedClasses.Count);
 
                               }
                               #endregion
+
+                              #region Debug
+                              table.TableName = "test";
+                              table.WriteXml(Application.StartupPath + "\\debug.xml");
+
+                              #endregion
+
                               bkw.ReportProgress(90);
                               document = conf.Template;
                               document.MailMerge.Execute(table);

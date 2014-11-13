@@ -61,6 +61,16 @@
       <HintPath>library\FISCA.Data.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="FISCA.DSAClient, Version=1.0.1.16, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>library\FISCA.DSAClient.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FISCA.DSAUtil, Version=3.9.0.10, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>library\FISCA.DSAUtil.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="FISCA.Presentation, Version=1.1.0.16, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>library\FISCA.Presentation.dll</HintPath>
@@ -94,6 +104,11 @@
     <Reference Include="SmartSchool.Customization.Data, Version=1.3.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>library\SmartSchool.Customization.Data.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SmartSchool.Evaluation.HS, Version=1.0.6.8, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>library\SmartSchool.Evaluation.HS.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -130,6 +145,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringComparer.cs" />
+    <Compile Include="Utility.cs" />
     <EmbeddedResource Include="CloneConfigure.resx">
       <DependentUpon>CloneConfigure.cs</DependentUpon>
     </EmbeddedResource>
@@ -170,6 +186,12 @@
     <Content Include="library\FISCA.Data.pdb" />
     <Content Include="library\FISCA.Data.xml" />
     <Content Include="library\FISCA.dll" />
+    <Content Include="library\FISCA.DSAClient.dll" />
+    <Content Include="library\FISCA.DSAClient.pdb" />
+    <Content Include="library\FISCA.DSAClient.xml" />
+    <Content Include="library\FISCA.DSAUtil.dll" />
+    <Content Include="library\FISCA.DSAUtil.pdb" />
+    <Content Include="library\FISCA.DSAUtil.xml" />
     <Content Include="library\FISCA.pdb" />
     <Content Include="library\FISCA.Presentation.dll" />
     <Content Include="library\FISCA.Presentation.pdb" />
@@ -190,6 +212,8 @@
     <Content Include="library\SmartSchool.Core.pdb" />
     <Content Include="library\SmartSchool.Customization.Data.dll" />
     <Content Include="library\SmartSchool.Customization.Data.xml" />
+    <Content Include="library\SmartSchool.Evaluation.HS.dll" />
+    <Content Include="library\SmartSchool.Evaluation.HS.pdb" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
