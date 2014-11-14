@@ -117,6 +117,7 @@ namespace ClassExamReport_nehs
                     table.Columns.Add("學期");
                     table.Columns.Add("類別排名1");
                     table.Columns.Add("類別排名2");
+                    table.Columns.Add("班級人數");
                     //«通訊地址»«通訊地址郵遞區號»«通訊地址內容»
                     //«戶籍地址»«戶籍地址郵遞區號»«戶籍地址內容»
                     //«監護人»«父親»«母親»«科別名稱»
@@ -158,6 +159,7 @@ namespace ClassExamReport_nehs
                          table.Columns.Add("總分科排名母數" + Num);
                          table.Columns.Add("總分全校排名" + Num);
                          table.Columns.Add("總分全校排名母數" + Num);
+                         table.Columns.Add("進退步分數" + Num);
                          table.Columns.Add("平均" + Num);
                          table.Columns.Add("平均班排名" + Num);
                          table.Columns.Add("平均班排名母數" + Num);
@@ -207,6 +209,8 @@ namespace ClassExamReport_nehs
                          table.Columns.Add("類別2加權平均" + Num);
                          table.Columns.Add("類別2加權平均排名" + Num);
                          table.Columns.Add("類別2加權平均排名母數" + Num);
+
+                         table.Columns.Add("不及格科目數" + Num);
                     }
                     #region 瘋狂的組距及分析
                     #region 各科目組距及分析
@@ -245,8 +249,7 @@ namespace ClassExamReport_nehs
                          table.Columns.Add("班組距" + subjectIndex + "count20Down"); table.Columns.Add("科組距" + subjectIndex + "count20Down"); table.Columns.Add("校組距" + subjectIndex + "count20Down"); table.Columns.Add("類1組距" + subjectIndex + "count20Down"); table.Columns.Add("類2組距" + subjectIndex + "count20Down");
                          table.Columns.Add("班組距" + subjectIndex + "count10Down"); table.Columns.Add("科組距" + subjectIndex + "count10Down"); table.Columns.Add("校組距" + subjectIndex + "count10Down"); table.Columns.Add("類1組距" + subjectIndex + "count10Down"); table.Columns.Add("類2組距" + subjectIndex + "count10Down");
 
-                         // 新增班及格人數、率
-                         table.Columns.Add("班及格人數" + subjectIndex);
+                         // 新增班及格率                         
                          table.Columns.Add("班及格率" + subjectIndex);
                     }
                     #endregion
@@ -560,6 +563,10 @@ namespace ClassExamReport_nehs
                               Dictionary<string, decimal> studentPrintSubjectAvgW = new Dictionary<string, decimal>();
                               Dictionary<string, decimal> studentTag1SubjectAvgW = new Dictionary<string, decimal>();
                               Dictionary<string, decimal> studentTag2SubjectAvgW = new Dictionary<string, decimal>();
+
+                             // 前次平均
+                              Dictionary<string, decimal> studentRefPrintSubjectAvg = new Dictionary<string, decimal>();
+
                               Dictionary<string, decimal> analytics = new Dictionary<string, decimal>();
                               int total = 0;
                               foreach (var gss in gradeyearStudents.Values)
@@ -611,6 +618,8 @@ namespace ClassExamReport_nehs
                                         {
                                              decimal printSubjectSum = 0;
                                              int printSubjectCount = 0;
+                                             decimal printRefSubjectSum = 0;
+                                             int printRefSubjectCount = 0;
                                              decimal tag1SubjectSum = 0;
                                              int tag1SubjectCount = 0;
                                              decimal tag2SubjectSum = 0;
@@ -621,8 +630,26 @@ namespace ClassExamReport_nehs
                                              decimal tag1SubjectCreditSum = 0;
                                              decimal tag2SubjectSumW = 0;
                                              decimal tag2SubjectCreditSum = 0;
+
+
                                              foreach (var subjectName in studentExamSores[studentID].Keys)
                                              {
+                                                 // 處理前次成績平均
+                                                 if (studentRefExamSores.ContainsKey(studentID))
+                                                 {
+                                                     foreach (ExamScoreInfo es in studentRefExamSores[studentID].Values)
+                                                     {
+                                                         if (conf.PrintSubjectList.Contains(subjectName))
+                                                         {
+                                                             if (es.Subject == subjectName)
+                                                             {
+                                                                 printRefSubjectSum+=es.ExamScore;
+                                                                 printRefSubjectCount++;
+                                                             }
+                                                         }
+                                                     }
+                                                     
+                                                 }
                                                   if (conf.PrintSubjectList.Contains(subjectName))
                                                   {
                                                        #region 是列印科目
@@ -736,6 +763,13 @@ namespace ClassExamReport_nehs
                                                   }
 
                                              }
+
+                                            // 處理前次成績算數平均
+                                            if (printRefSubjectCount > 0)
+                                            {
+                                                studentRefPrintSubjectAvg.Add(studentID, Math.Round(printRefSubjectSum / printRefSubjectCount, aRd, MidpointRounding.AwayFromZero));                                             
+                                            }
+
                                              if (printSubjectCount > 0)
                                              {
                                                   #region 有列印科目處理加總成績
@@ -1083,6 +1117,7 @@ namespace ClassExamReport_nehs
                                    row["班級科別名稱"] = classRec.Department;
                                    row["班級"] = classRec.ClassName;
                                    row["定期評量"] = conf.ExamRecord.Name;
+                                   row["班級人數"] = classRec.Students.Count;
                                    row["班導師"] = classRec.RefTeacher == null ? "" : classRec.RefTeacher.TeacherName;
                                    int ClassStuNum = 0;
 
@@ -1802,6 +1837,13 @@ namespace ClassExamReport_nehs
                                              {
                                                   row["平均全校排名" + ClassStuNum] = ranks[key].IndexOf(studentPrintSubjectAvg[studentID]) + 1;
                                                   row["平均全校排名母數" + ClassStuNum] = ranks[key].Count;
+                                             }
+
+                                            // 進退步分數
+                                             if (studentRefPrintSubjectAvg.ContainsKey(studentID))
+                                             {
+                                                 decimal ss = studentPrintSubjectAvg[studentID] - studentRefPrintSubjectAvg[studentID];
+                                                 row["進退步分數" + ClassStuNum] = ss;
                                              }
                                         }
                                    }
@@ -2934,8 +2976,65 @@ namespace ClassExamReport_nehs
                                    }
                                    #endregion
 
+                                   #region 處理班及格率
+                                   decimal countPass = 0, countP = 0;
+                                   for (subjectIndex = 1; subjectIndex <= conf.SubjectLimit; subjectIndex++)
+                                   {
+                                       countPass = 0; countP = 0;
+                                       for (int Num = 1; Num <= conf.StudentLimit; Num++)
+                                       {
+                                           string key1 = "科目成績" + Num + "-" + subjectIndex;
+                                           if (row[key1] != null)
+                                           {
+                                               string xx = row[key1].ToString();
+                                               if (xx != "")
+                                               {
+                                                   if (!xx.Contains("*"))
+                                                       countPass++;
 
-                                 
+                                                   countP++;
+                                               }
+                                           }
+                                       }
+
+                                       if (countP > 0)
+                                       {
+                                           row["班及格率" + subjectIndex] = Math.Round((countPass / countP) * 100, 0, MidpointRounding.AwayFromZero);
+                                       }                                     
+                                   }
+
+                                   #endregion
+
+                                   #region 不及格科目數
+                                    decimal countP1ass1 = 0, countP1 = 0;
+                                   for (int Num = 1; Num <= conf.StudentLimit; Num++)
+                                   {
+                                       countP1ass1 = 0; countP1 = 0;
+                                       for (subjectIndex = 1; subjectIndex <= conf.SubjectLimit; subjectIndex++)
+                                       {
+   
+                                           string key1 = "科目成績" + Num + "-" + subjectIndex;
+                                           if (row[key1] != null)
+                                           {
+                                               string xx = row[key1].ToString();
+                                               if (xx != "")
+                                               {
+                                                   if (xx.Contains("*"))
+                                                       countP1ass1++;
+
+                                                   countP1++;
+                                               }
+                                           }
+                                       }
+
+                                       if (countP1 > 0)
+                                       {
+                                           row["不及格科目數" + Num] = countP1ass1;
+                                       }                                       
+                                   }
+                                   #endregion
+
+
 
                                    table.Rows.Add(row);
 
@@ -2977,7 +3076,7 @@ namespace ClassExamReport_nehs
                #region 基本欄位
                builder.Writeln("基本欄位");
                builder.StartTable();
-               foreach (string field in new string[] { "學年度", "學期", "學校名稱", "學校地址", "學校電話", "科別名稱", "定期評量", "班級", "班導師", "類別排名1", "類別排名2" })
+               foreach (string field in new string[] { "學年度", "學期", "學校名稱", "學校地址", "學校電話", "科別名稱", "定期評量", "班級","班級人數", "班導師", "類別排名1", "類別排名2" })
                {
                     builder.InsertCell();
                     builder.Write(field);
@@ -3145,7 +3244,11 @@ namespace ClassExamReport_nehs
                builder.InsertCell();
                builder.Write("平均科排名");
                builder.InsertCell();
-               builder.Write("平均校排名");
+               builder.Write("平均校排名");               
+               builder.InsertCell();
+               builder.Write("不及格科目數");               
+               builder.InsertCell();
+               builder.Write("進退步分數");
                builder.EndRow();
                for (int stuIndex = 1; stuIndex <= maxStuNum; stuIndex++)
                {
@@ -3177,6 +3280,10 @@ namespace ClassExamReport_nehs
                     builder.InsertCell();
                     builder.InsertField("MERGEFIELD 平均全校排名" + stuIndex + " \\* MERGEFORMAT ", "«RA»");
                     builder.InsertField("MERGEFIELD 平均全校排名母數" + stuIndex + " \\b /  \\* MERGEFORMAT ", "/«TA»");
+                    builder.InsertCell();
+                    builder.InsertField("MERGEFIELD 不及格科目數" + stuIndex + " \\* MERGEFORMAT ", "«S»");
+                    builder.InsertCell();
+                    builder.InsertField("MERGEFIELD 進退步分數" + stuIndex + " \\* MERGEFORMAT ", "«S»");
                     builder.EndRow();
                }
                builder.EndTable();
@@ -3561,6 +3668,12 @@ namespace ClassExamReport_nehs
                     for (int subjectIndex = 1; subjectIndex <= maxSubjectNum; subjectIndex++)
                     {
                          builder.InsertCell(); builder.InsertField("MERGEFIELD " + key + "組距" + subjectIndex + "count10Down \\* MERGEFORMAT ", "«C" + subjectIndex + "»");
+                    }
+                    builder.EndRow();
+                    builder.InsertCell(); builder.Write("班及格率");
+                    for (int subjectIndex = 1; subjectIndex <= maxSubjectNum; subjectIndex++)
+                    {
+                        builder.InsertCell(); builder.InsertField("MERGEFIELD " + key + "班及格率" + subjectIndex + " \\* MERGEFORMAT ", "«C" + subjectIndex + "»");
                     }
                     builder.EndRow();
                     builder.EndTable();
