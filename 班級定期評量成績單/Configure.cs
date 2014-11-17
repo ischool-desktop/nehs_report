@@ -137,5 +137,8 @@ namespace ClassExamReport_nehs
             this.TagRank2SubjectList = new List<string>(this.TagRank2SubjectListString.Split(new string[] { "^^^" }, StringSplitOptions.RemoveEmptyEntries));
             this.Template = new Aspose.Words.Document(new MemoryStream(Convert.FromBase64String(this.TemplateStream)));
         }
+
+        [FISCA.UDT.Field]
+        public string ChkDisplayName { get; set; }
     }
 }

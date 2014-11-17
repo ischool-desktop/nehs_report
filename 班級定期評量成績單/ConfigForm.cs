@@ -230,13 +230,14 @@ namespace ClassExamReport_nehs
                     Configure.Template = dialog.Template;
                     Configure.SubjectLimit = dialog.SubjectLimit;
                     Configure.StudentLimit = dialog.StudentLimit;
-                    Configure.SchoolYear = _DefalutSchoolYear;
+                    Configure.SchoolYear = _DefalutSchoolYear;                    
                     Configure.Semester = _DefaultSemester;
                     if (cboExam.Items.Count > 0)
                         Configure.ExamRecord = (ExamRecord)cboExam.Items[0];
                     _Configures.Add(Configure);
                     cboConfigure.Items.Insert(cboConfigure.SelectedIndex, Configure);
                     cboConfigure.SelectedIndex = cboConfigure.SelectedIndex - 1;
+                    Configure.ChkDisplayName = chkDisplayStudentName.Checked.ToString();
                     Configure.Encode();
                     Configure.Save();
                 }
@@ -295,6 +296,14 @@ namespace ClassExamReport_nehs
                     {
                         item.Checked = Configure.TagRank2SubjectList.Contains(item.Text);
                     }
+
+                    chkDisplayStudentName.Checked = false;
+                    if (!string.IsNullOrEmpty(Configure.ChkDisplayName))
+                    {
+                        bool chk;
+                        if (bool.TryParse(Configure.ChkDisplayName, out chk))
+                            chkDisplayStudentName.Checked = chk;
+                    }
                 }
                 else
                 {
@@ -318,6 +327,7 @@ namespace ClassExamReport_nehs
                     {
                         item.Checked = false;
                     }
+                    chkDisplayStudentName.Checked = false;
                 }
             }
         }
@@ -370,7 +380,7 @@ namespace ClassExamReport_nehs
                     {
                         //document.Save(sd.FileName, Aspose.Words.SaveFormat.Doc);
                         System.IO.FileStream stream = new FileStream(sd.FileName, FileMode.Create, FileAccess.Write);
-                        stream.Write(Properties.Resources.高中班級考試成績單樣版, 0, Properties.Resources.高中班級考試成績單樣版.Length);
+                        stream.Write(Properties.Resources.高中班級考試成績單樣版_實中, 0, Properties.Resources.高中班級考試成績單樣版_實中.Length);
                         stream.Flush();
                         stream.Close();
 
@@ -456,6 +466,7 @@ namespace ClassExamReport_nehs
                 conf.TagRank2TagList.AddRange(Configure.TagRank2TagList);
                 conf.TagRank2TagName = Configure.TagRank2TagName;
                 conf.Template = Configure.Template;
+                conf.ChkDisplayName = Configure.ChkDisplayName;
                 conf.Encode();
                 conf.Save();
                 _Configures.Add(conf);
@@ -560,6 +571,7 @@ namespace ClassExamReport_nehs
                 }
             }
 
+            Configure.ChkDisplayName = chkDisplayStudentName.Checked.ToString();
             Configure.Encode();
             Configure.Save();
         }

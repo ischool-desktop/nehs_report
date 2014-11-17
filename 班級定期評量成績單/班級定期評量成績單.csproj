@@ -71,6 +71,11 @@
       <HintPath>library\FISCA.DSAUtil.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="FISCA.Permission, Version=1.2.0.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>library\FISCA.Permission.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="FISCA.Presentation, Version=1.1.0.16, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>library\FISCA.Presentation.dll</HintPath>
@@ -175,7 +180,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="Resources\Template.doc" />
-    <None Include="Resources\高中班級考試成績單樣版.doc" />
+    <None Include="Resources\高中班級考試成績單樣版-實中.doc" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="library\Aspose.Words.dll" />
@@ -193,6 +198,9 @@
     <Content Include="library\FISCA.DSAUtil.pdb" />
     <Content Include="library\FISCA.DSAUtil.xml" />
     <Content Include="library\FISCA.pdb" />
+    <Content Include="library\FISCA.Permission.dll" />
+    <Content Include="library\FISCA.Permission.pdb" />
+    <Content Include="library\FISCA.Permission.xml" />
     <Content Include="library\FISCA.Presentation.dll" />
     <Content Include="library\FISCA.Presentation.pdb" />
     <Content Include="library\FISCA.Presentation.xml" />

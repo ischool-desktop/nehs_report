@@ -8,6 +8,7 @@ using System.Threading;
 using SmartSchool.Customization.Data;
 using SmartSchool.Customization.Data.StudentExtension;
 using SmartSchool;
+using FISCA.Permission;
 
 namespace ClassExamReport_nehs
 {
@@ -16,13 +17,17 @@ namespace ClassExamReport_nehs
 
          // 平均四捨五入位數
          static int aRd = 1;
+         public static bool _ChkDisplayStudentName=false;
 
           [FISCA.MainMethod]
           public static void Main()
           {
-              var btn = K12.Presentation.NLDPanels.Class.RibbonBarItems["資料統計"]["報表"]["成績相關報表"]["班級定期評量成績單(實中)"];
-               btn.Enable = false;
-               K12.Presentation.NLDPanels.Class.SelectedSourceChanged += delegate { btn.Enable = K12.Presentation.NLDPanels.Class.SelectedSource.Count > 0; };
+              Catalog catalog1 = RoleAclSource.Instance["班級"]["功能按鈕"];
+              catalog1.Add(new RibbonFeature("SHClassExamReport_nehs", "班級定期評量成績單(實中不計名排名)"));
+
+              var btn = K12.Presentation.NLDPanels.Class.RibbonBarItems["資料統計"]["報表"]["成績相關報表"]["班級定期評量成績單(實中不計名排名)"];
+              btn.Enable = UserAcl.Current["SHClassExamReport_nehs"].Executable;
+               //K12.Presentation.NLDPanels.Class.SelectedSourceChanged += delegate { btn.Enable = K12.Presentation.NLDPanels.Class.SelectedSource.Count > 0; };
                btn.Click += new EventHandler(Program_Click);
           }
 
@@ -96,6 +101,12 @@ namespace ClassExamReport_nehs
                                    selectedStudents.Add(stuRec);
                          }
                     }
+
+                   // 檢查是否計名
+                    _ChkDisplayStudentName = false;
+                    bool chk;
+                    if (bool.TryParse(form.Configure.ChkDisplayName, out chk))
+                        _ChkDisplayStudentName = chk;
 
                     // 取得學生及格與補考標準
                     Utility.tmpStudentApplyLimitDict.Clear();
@@ -1174,9 +1185,18 @@ namespace ClassExamReport_nehs
                                         }
                                         row["學生系統編號" + ClassStuNum] = stuRec.StudentID;
                                         row["年級" + ClassStuNum] = stuRec.RefClass.GradeYear;
-                                        row["座號" + ClassStuNum] = stuRec.SeatNo;
+                                        
                                         row["學號" + ClassStuNum] = stuRec.StudentNumber;
-                                        row["姓名" + ClassStuNum] = stuRec.StudentName;
+                                        if (_ChkDisplayStudentName)
+                                        {
+                                            row["座號" + ClassStuNum] = stuRec.SeatNo;
+                                            row["姓名" + ClassStuNum] = stuRec.StudentName;
+                                        }
+                                        else
+                                        {
+                                            row["座號" + ClassStuNum] = "";
+                                            row["姓名" + ClassStuNum] = "";
+                                        }
                                         //整理這個班的學生所屬類別
                                         if (studentTag1Group.ContainsKey(studentID) && !tag1List.Contains(studentTag1Group[studentID]))
                                         {

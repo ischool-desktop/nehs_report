@@ -27,7 +27,7 @@ namespace ClassExamReport_nehs
         {
             if (checkBoxX1.Checked)
             {
-                Template = new Aspose.Words.Document(new MemoryStream(Properties.Resources.高中班級考試成績單樣版));
+                Template = new Aspose.Words.Document(new MemoryStream(Properties.Resources.高中班級考試成績單樣版_實中));
                 this.SubjectLimit = 25;
                 this.StudentLimit = 55;
             }
@@ -110,7 +110,7 @@ namespace ClassExamReport_nehs
             {
                 //document.Save(path, Aspose.Words.SaveFormat.Doc);
                 System.IO.FileStream stream = new FileStream(path, FileMode.Create, FileAccess.Write);
-                stream.Write(Properties.Resources.高中班級考試成績單樣版, 0, Properties.Resources.高中班級考試成績單樣版.Length);
+                stream.Write(Properties.Resources.高中班級考試成績單樣版_實中, 0, Properties.Resources.高中班級考試成績單樣版_實中.Length);
                 stream.Flush();
                 stream.Close();
                 System.Diagnostics.Process.Start(path);
@@ -127,7 +127,7 @@ namespace ClassExamReport_nehs
                     {
                         //document.Save(sd.FileName, Aspose.Words.SaveFormat.Doc);
                         System.IO.FileStream stream = new FileStream(sd.FileName, FileMode.Create, FileAccess.Write);
-                        stream.Write(Properties.Resources.高中班級考試成績單樣版, 0, Properties.Resources.高中班級考試成績單樣版.Length);
+                        stream.Write(Properties.Resources.高中班級考試成績單樣版_實中, 0, Properties.Resources.高中班級考試成績單樣版_實中.Length);
                         stream.Flush();
                         stream.Close();
 

@@ -73,9 +73,9 @@ namespace ClassExamReport_nehs.Properties {
         /// <summary>
         ///   查詢類型 System.Byte[] 的當地語系化資源。
         /// </summary>
-        internal static byte[] 高中班級考試成績單樣版 {
+        internal static byte[] 高中班級考試成績單樣版_實中 {
             get {
-                object obj = ResourceManager.GetObject("高中班級考試成績單樣版", resourceCulture);
+                object obj = ResourceManager.GetObject("高中班級考試成績單樣版_實中", resourceCulture);
                 return ((byte[])(obj));
             }
         }

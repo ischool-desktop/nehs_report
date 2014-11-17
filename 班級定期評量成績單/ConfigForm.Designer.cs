@@ -66,6 +66,7 @@
             this.btnCancel = new DevComponents.DotNetBar.ButtonX();
             this.panel4 = new System.Windows.Forms.Panel();
             this.circularProgress1 = new DevComponents.DotNetBar.Controls.CircularProgress();
+            this.chkDisplayStudentName = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -349,6 +350,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.chkDisplayStudentName);
             this.panel1.Controls.Add(this.cboConfigure);
             this.panel1.Controls.Add(this.linkLabel4);
             this.panel1.Controls.Add(this.linkLabel3);
@@ -641,6 +643,22 @@
             this.circularProgress1.Style = DevComponents.DotNetBar.eDotNetBarStyle.Windows7;
             this.circularProgress1.TabIndex = 13;
             // 
+            // chkDisplayStudentName
+            // 
+            this.chkDisplayStudentName.AutoSize = true;
+            this.chkDisplayStudentName.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkDisplayStudentName.BackgroundStyle.Class = "";
+            this.chkDisplayStudentName.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkDisplayStudentName.Location = new System.Drawing.Point(270, 81);
+            this.chkDisplayStudentName.Name = "chkDisplayStudentName";
+            this.chkDisplayStudentName.Size = new System.Drawing.Size(107, 21);
+            this.chkDisplayStudentName.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkDisplayStudentName.TabIndex = 14;
+            this.chkDisplayStudentName.Text = "顯示座號姓名";
+            // 
             // ConfigForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -653,7 +671,7 @@
             this.DoubleBuffered = true;
             this.MaximizeBox = true;
             this.Name = "ConfigForm";
-            this.Text = "班級定期評量成績單(實中)";
+            this.Text = "班級定期評量成績單(實中不計名排名)";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -707,6 +725,7 @@
         private DevComponents.DotNetBar.Controls.CircularProgress circularProgress1;
         private DevComponents.DotNetBar.ButtonX btnSaveConfig;
         private System.Windows.Forms.LinkLabel linkLabel5;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkDisplayStudentName;
     }
 }
 

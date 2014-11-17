@@ -121,7 +121,7 @@
   <data name="Template" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\template.doc;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="高中班級考試成績單樣版" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\高中班級考試成績單樣版.doc;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="高中班級考試成績單樣版_實中" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\高中班級考試成績單樣版-實中.doc;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>
