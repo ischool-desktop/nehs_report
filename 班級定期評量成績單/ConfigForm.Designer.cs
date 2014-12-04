@@ -47,6 +47,7 @@
             this.cboSemester = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.chkDisplayStudentName = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.cboConfigure = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.linkLabel4 = new System.Windows.Forms.LinkLabel();
             this.linkLabel3 = new System.Windows.Forms.LinkLabel();
@@ -66,13 +67,16 @@
             this.btnCancel = new DevComponents.DotNetBar.ButtonX();
             this.panel4 = new System.Windows.Forms.Panel();
             this.circularProgress1 = new DevComponents.DotNetBar.Controls.CircularProgress();
-            this.chkDisplayStudentName = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.iptRd = new DevComponents.Editors.IntegerInput();
+            this.labelX13 = new DevComponents.DotNetBar.LabelX();
+            this.labelX12 = new DevComponents.DotNetBar.LabelX();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.iptRd)).BeginInit();
             this.SuspendLayout();
             // 
             // cboTagRank1
@@ -350,6 +354,9 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.iptRd);
+            this.panel1.Controls.Add(this.labelX13);
+            this.panel1.Controls.Add(this.labelX12);
             this.panel1.Controls.Add(this.chkDisplayStudentName);
             this.panel1.Controls.Add(this.cboConfigure);
             this.panel1.Controls.Add(this.linkLabel4);
@@ -376,6 +383,22 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(392, 509);
             this.panel1.TabIndex = 0;
+            // 
+            // chkDisplayStudentName
+            // 
+            this.chkDisplayStudentName.AutoSize = true;
+            this.chkDisplayStudentName.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.chkDisplayStudentName.BackgroundStyle.Class = "";
+            this.chkDisplayStudentName.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkDisplayStudentName.Location = new System.Drawing.Point(270, 81);
+            this.chkDisplayStudentName.Name = "chkDisplayStudentName";
+            this.chkDisplayStudentName.Size = new System.Drawing.Size(107, 21);
+            this.chkDisplayStudentName.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkDisplayStudentName.TabIndex = 14;
+            this.chkDisplayStudentName.Text = "顯示座號姓名";
             // 
             // cboConfigure
             // 
@@ -634,7 +657,7 @@
             this.circularProgress1.BackgroundStyle.Class = "";
             this.circularProgress1.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.circularProgress1.FocusCuesEnabled = false;
-            this.circularProgress1.Location = new System.Drawing.Point(355, 217);
+            this.circularProgress1.Location = new System.Drawing.Point(359, 218);
             this.circularProgress1.Name = "circularProgress1";
             this.circularProgress1.ProgressBarType = DevComponents.DotNetBar.eCircularProgressType.Dot;
             this.circularProgress1.ProgressColor = System.Drawing.Color.LimeGreen;
@@ -643,21 +666,52 @@
             this.circularProgress1.Style = DevComponents.DotNetBar.eDotNetBarStyle.Windows7;
             this.circularProgress1.TabIndex = 13;
             // 
-            // chkDisplayStudentName
-            // 
-            this.chkDisplayStudentName.AutoSize = true;
-            this.chkDisplayStudentName.BackColor = System.Drawing.Color.Transparent;
+            // iptRd
             // 
             // 
             // 
-            this.chkDisplayStudentName.BackgroundStyle.Class = "";
-            this.chkDisplayStudentName.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chkDisplayStudentName.Location = new System.Drawing.Point(270, 81);
-            this.chkDisplayStudentName.Name = "chkDisplayStudentName";
-            this.chkDisplayStudentName.Size = new System.Drawing.Size(107, 21);
-            this.chkDisplayStudentName.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.chkDisplayStudentName.TabIndex = 14;
-            this.chkDisplayStudentName.Text = "顯示座號姓名";
+            // 
+            this.iptRd.BackgroundStyle.Class = "DateTimeInputBackground";
+            this.iptRd.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.iptRd.ButtonFreeText.Shortcut = DevComponents.DotNetBar.eShortcut.F2;
+            this.iptRd.Location = new System.Drawing.Point(224, 203);
+            this.iptRd.MaxValue = 10;
+            this.iptRd.MinValue = 0;
+            this.iptRd.Name = "iptRd";
+            this.iptRd.ShowUpDown = true;
+            this.iptRd.Size = new System.Drawing.Size(54, 25);
+            this.iptRd.TabIndex = 19;
+            this.iptRd.Value = 1;
+            // 
+            // labelX13
+            // 
+            this.labelX13.AutoSize = true;
+            this.labelX13.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.labelX13.BackgroundStyle.Class = "";
+            this.labelX13.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX13.Location = new System.Drawing.Point(285, 205);
+            this.labelX13.Name = "labelX13";
+            this.labelX13.Size = new System.Drawing.Size(74, 21);
+            this.labelX13.TabIndex = 18;
+            this.labelX13.Text = "位四捨五入";
+            // 
+            // labelX12
+            // 
+            this.labelX12.AutoSize = true;
+            this.labelX12.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.labelX12.BackgroundStyle.Class = "";
+            this.labelX12.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX12.Location = new System.Drawing.Point(93, 205);
+            this.labelX12.Name = "labelX12";
+            this.labelX12.Size = new System.Drawing.Size(127, 21);
+            this.labelX12.TabIndex = 17;
+            this.labelX12.Text = "平均計算至小數點後";
             // 
             // ConfigForm
             // 
@@ -681,6 +735,7 @@
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.iptRd)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -726,6 +781,9 @@
         private DevComponents.DotNetBar.ButtonX btnSaveConfig;
         private System.Windows.Forms.LinkLabel linkLabel5;
         private DevComponents.DotNetBar.Controls.CheckBoxX chkDisplayStudentName;
+        private DevComponents.Editors.IntegerInput iptRd;
+        private DevComponents.DotNetBar.LabelX labelX13;
+        private DevComponents.DotNetBar.LabelX labelX12;
     }
 }
 

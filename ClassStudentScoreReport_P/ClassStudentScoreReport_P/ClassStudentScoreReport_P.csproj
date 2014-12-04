@@ -90,7 +90,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DAO\StudentScore.cs" />
+    <Compile Include="DAO\ExamScore.cs" />
+    <Compile Include="DAO\QueryData.cs" />
     <Compile Include="formClassScore.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +100,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Utiltiy.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +142,14 @@
     <EmbeddedResource Include="formClassScore.resx">
       <DependentUpon>formClassScore.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Template\實驗中學國小成績總表-空白.xls" />
+    <None Include="Template\實驗中學國小部成績總表-樣版.xls" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

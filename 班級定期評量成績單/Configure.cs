@@ -100,6 +100,12 @@ namespace ClassExamReport_nehs
         public List<string> RankFilterTagList { get; private set; }
 
         /// <summary>
+        /// 平均四捨五入位數
+        /// </summary>
+        [FISCA.UDT.Field]
+        public int? AvgRd { get; set; }
+
+        /// <summary>
         /// 在儲存前，把資料填入儲存欄位中
         /// </summary>
         public void Encode()

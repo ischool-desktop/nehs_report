@@ -176,6 +176,7 @@ namespace ClassExamReport_nehs
         private void btnPrint_Click(object sender, EventArgs e)
         {
             SaveTemplate(null, null);
+            Program.aRd = iptRd.Value;
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();
         }
@@ -296,6 +297,11 @@ namespace ClassExamReport_nehs
                     {
                         item.Checked = Configure.TagRank2SubjectList.Contains(item.Text);
                     }
+
+                    if (Configure.AvgRd.HasValue)
+                        iptRd.Value = Configure.AvgRd.Value;
+                    else
+                        iptRd.Value = 1;
 
                     chkDisplayStudentName.Checked = false;
                     if (!string.IsNullOrEmpty(Configure.ChkDisplayName))
@@ -457,6 +463,7 @@ namespace ClassExamReport_nehs
                 conf.RefenceExamRecord = Configure.RefenceExamRecord;
                 conf.SchoolYear = Configure.SchoolYear;
                 conf.Semester = Configure.Semester;
+                conf.AvgRd = Configure.AvgRd;
                 conf.SubjectLimit = Configure.SubjectLimit;
                 conf.StudentLimit = Configure.StudentLimit;
                 conf.TagRank1SubjectList.AddRange(Configure.TagRank1SubjectList);
@@ -497,6 +504,9 @@ namespace ClassExamReport_nehs
                         Configure.PrintSubjectList.Remove(item.Text);
                 }
             }
+
+            Configure.AvgRd = iptRd.Value;
+
             Configure.TagRank1TagName = cboTagRank1.Text;
             Configure.TagRank1TagList.Clear();
             foreach (var item in _TagConfigRecords)

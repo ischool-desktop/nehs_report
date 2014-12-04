@@ -16,7 +16,7 @@ namespace ClassExamReport_nehs
      {
 
          // 平均四捨五入位數
-         static int aRd = 1;
+         public static int aRd = 1;
          public static bool _ChkDisplayStudentName=false;
 
           [FISCA.MainMethod]
