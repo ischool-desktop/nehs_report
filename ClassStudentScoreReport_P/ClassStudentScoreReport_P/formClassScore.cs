@@ -89,6 +89,8 @@ namespace ClassStudentScoreReport_P
             // 取得評量成績
             Dictionary<string, List<ExamScore>> StudExamScoreDict = QueryData.GetStudentExamScoreDictByStudentIDList(StudentIDList, _SchoolYear, _Semester);
 
+      
+
             // 取得學期成績
             List<JHSemesterScoreRecord> SemesterScoreRecordList = JHSemesterScore.SelectBySchoolYearAndSemester(StudentIDList, _SchoolYear, _Semester);
             Dictionary<string, JHSemesterScoreRecord> StudSemesterScoreRecordDict = new Dictionary<string, JHSemesterScoreRecord>();
@@ -96,20 +98,36 @@ namespace ClassStudentScoreReport_P
                 if (!StudSemesterScoreRecordDict.ContainsKey(rec.RefStudentID))
                     StudSemesterScoreRecordDict.Add(rec.RefStudentID, rec);
 
-            // 取得缺曠
-            List<JHAttendanceRecord> AttendanceRecordList = JHAttendance.SelectBySchoolYearAndSemester(StudentRecList, _SchoolYear, _Semester);
-            Dictionary<string, List<JHAttendanceRecord>> StudAttendanceRecordDict = new Dictionary<string, List<JHAttendanceRecord>>();
-            foreach (JHAttendanceRecord rec in AttendanceRecordList)
-            {
-                if (!StudAttendanceRecordDict.ContainsKey(rec.RefStudentID))
-                {
-                    StudAttendanceRecordDict.Add(rec.RefStudentID, new List<JHAttendanceRecord>());
-                    StudAttendanceRecordDict[rec.RefStudentID].Add(rec);
-                }
-            }
+
+            //// 取得缺曠,學生系統編號,缺曠類別,缺曠數
+            //Dictionary<string, Dictionary<string, int>> AttendanceRecordDict = new Dictionary<string, Dictionary<string, int>>(); 
+            //List<JHAttendanceRecord> AttendanceRecordList = JHAttendance.SelectBySchoolYearAndSemester(StudentRecList, _SchoolYear, _Semester);
             
+            //foreach (JHAttendanceRecord rec in AttendanceRecordList)
+            //{
+            //    foreach (AttendancePeriod ap in rec.PeriodDetail)
+            //    {
+            //        if (!AttendanceRecordDict.ContainsKey(ap.RefStudentID))
+            //            AttendanceRecordDict.Add(ap.RefStudentID, new Dictionary<string, int>());
+
+            //        if (!AttendanceRecordDict[rec.RefStudentID].ContainsKey(ap.AbsenceType))
+            //            AttendanceRecordDict[rec.RefStudentID].Add(ap.AbsenceType, 0);
+
+            //        AttendanceRecordDict[rec.RefStudentID][ap.AbsenceType]++;
+
+            //        // 缺曠索引
+            //        if (!AttendColIdxDict.ContainsKey(ap.AbsenceType))
+            //            AttendColIdxDict.Add(ap.AbsenceType, 0);
+            //    }            
+            //}
+            
+            // 取得缺曠資料
+            Dictionary<string, AbsenceObj> StudAbsenceObjDict = Utiltiy.GetStudAbsenceDict(_SchoolYear, _Semester);
+
+
             #endregion
 
+            
             #region 處理Excel
             
            // 讀取 Template
@@ -133,12 +151,18 @@ namespace ClassStudentScoreReport_P
             // 領域開始 Idx
             Dictionary<string, int> DomainBeginDict = new Dictionary<string, int>();
 
+            // 期中平均Idx
+            List<int> examColIdx1 = new List<int>();
+            // 期末平均 Idx
+            List<int> examColIdx2 = new List<int>();
 
             // 班級
             foreach (string ClassID in classStudentIDDict.Keys)
             {
                 DomainSubjectDict.Clear();
                 SubjBeginIdxDict.Clear();
+                examColIdx1.Clear();
+                examColIdx2.Clear();
                 // 領域科目名稱                                 
                 // 動態建立與收集成績表頭
                 foreach (string sid in classStudentIDDict[ClassID])
@@ -229,6 +253,25 @@ namespace ClassStudentScoreReport_P
                 // 課程成績
                 wb.Worksheets[classIDIdx].Cells.CopyColumns(wstTemp.Cells, 12, scoreCoIdx, 2);
 
+                // 期中總平均,期中排名,期末總平均,期末排名,進步成績,進步排名
+                wb.Worksheets[classIDIdx].Cells.CopyColumns(wstTemp.Cells, 14, scoreCoIdx+2, 6);
+
+                // 缺曠
+                wb.Worksheets[classIDIdx].Cells.CopyColumns(wstTemp.Cells, 20, scoreCoIdx + 8, 2);
+
+                // 取得平均位置
+                for (int col = 3; col <= wb.Worksheets[classIDIdx].Cells.MaxDataColumn; col++)
+                {
+                    if (wb.Worksheets[classIDIdx].Cells[2, col].StringValue.Contains("期中平均"))
+                        examColIdx1.Add(col);
+
+                    if (wb.Worksheets[classIDIdx].Cells[2, col].StringValue.Contains("期末平均"))
+                        examColIdx2.Add(col);
+                }
+
+
+                int attColdx = -1;
+
                 // 開始填值
                 int rowIdx = 3;
                 // 學生
@@ -264,22 +307,29 @@ namespace ClassStudentScoreReport_P
                                     {
                                         // 期中
                                         if (es.ExamName.Contains("期中"))
-                                        {
-                                            if (es.AssignmentScore.HasValue)
-                                                wb.Worksheets[classIDIdx].Cells[rowIdx, BIdx].PutValue(es.AssignmentScore.Value);
+                                        {                                           
 
-                                            if (es.Score.HasValue)
-                                                wb.Worksheets[classIDIdx].Cells[rowIdx, BIdx + 1].PutValue(es.Score.Value);
+                                            if (es.GetAssignmentScore().HasValue)
+                                                wb.Worksheets[classIDIdx].Cells[rowIdx, BIdx].PutValue(es.GetAssignmentScore().Value);
+
+                                            if (es.GetScore().HasValue)
+                                                wb.Worksheets[classIDIdx].Cells[rowIdx, BIdx + 1].PutValue(es.GetScore().Value);
+
+                                            if (es.GetAverage().HasValue)
+                                                wb.Worksheets[classIDIdx].Cells[rowIdx, BIdx + 2].PutValue(es.GetAverage().Value);
                                         }
 
                                         // 期末
                                         if (es.ExamName.Contains("期末"))
                                         {
-                                            if (es.AssignmentScore.HasValue)
-                                                wb.Worksheets[classIDIdx].Cells[rowIdx, BIdx+3].PutValue(es.AssignmentScore.Value);
+                                            if (es.GetAssignmentScore().HasValue)
+                                                wb.Worksheets[classIDIdx].Cells[rowIdx, BIdx+3].PutValue(es.GetAssignmentScore().Value);
 
-                                            if (es.Score.HasValue)
-                                                wb.Worksheets[classIDIdx].Cells[rowIdx, BIdx + 4].PutValue(es.Score.Value);
+                                            if (es.GetScore().HasValue)
+                                                wb.Worksheets[classIDIdx].Cells[rowIdx, BIdx + 4].PutValue(es.GetScore().Value);
+
+                                            if (es.GetAverage().HasValue)
+                                                wb.Worksheets[classIDIdx].Cells[rowIdx, BIdx + 5].PutValue(es.GetAverage().Value);
                                         }
 
 
@@ -316,8 +366,56 @@ namespace ClassStudentScoreReport_P
                     // 課程成績
                     if (StudSemesterScoreRecordDict.ContainsKey(StudentID))
                     {
-
+                        if(StudSemesterScoreRecordDict[StudentID].CourseLearnScore.HasValue)
+                            wb.Worksheets[classIDIdx].Cells[rowIdx, scoreCoIdx].PutValue(StudSemesterScoreRecordDict[StudentID].CourseLearnScore.Value);
                     }
+
+                                        
+                    // 期中總平均即時運算                    
+                    decimal examScore1 = 0;
+                    decimal examCount1 = 0;
+                    wb.CalculateFormula();
+                    foreach (int idx in examColIdx1)
+                    {   
+                        decimal score1;                        
+                        if(decimal.TryParse(wb.Worksheets[classIDIdx].Cells[rowIdx, idx].StringValue,out score1))
+                        {
+                            examScore1+=score1;
+                            examCount1++;
+                        }
+                    }
+
+                    if(examCount1>0)
+                        wb.Worksheets[classIDIdx].Cells[rowIdx, scoreCoIdx+2].PutValue(Math.Round(examScore1/examCount1,0));
+
+                    decimal examScore2 = 0;
+                    decimal examCount2 = 0;
+                    foreach (int idx in examColIdx2)
+                    {   
+                        decimal score2;                        
+                        if (decimal.TryParse(wb.Worksheets[classIDIdx].Cells[rowIdx, idx].StringValue, out score2))
+                        {
+                            examScore2 += score2;
+                            examCount2++;
+                        }
+                    }
+
+                    if (examCount2 > 0)
+                        wb.Worksheets[classIDIdx].Cells[rowIdx, scoreCoIdx + 4].PutValue(Math.Round(examScore2 / examCount2, 0));
+
+                    
+                    // 缺曠
+                    if (StudAbsenceObjDict.ContainsKey(StudentID))
+                    { 
+                        // 事假
+                        if(StudAbsenceObjDict[StudentID].PersonalDays.HasValue)
+                            wb.Worksheets[classIDIdx].Cells[rowIdx, scoreCoIdx + 8].PutValue(StudAbsenceObjDict[StudentID].PersonalDays.Value);
+
+                        // 病假
+                        if(StudAbsenceObjDict[StudentID].SickDays.HasValue)
+                            wb.Worksheets[classIDIdx].Cells[rowIdx, scoreCoIdx + 9].PutValue(StudAbsenceObjDict[StudentID].SickDays.Value);
+                    }
+
 
                     rowIdx++;
                 }

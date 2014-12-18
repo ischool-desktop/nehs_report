@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using ClassStudentScoreReport_P.DAO;
+using FISCA.UDT;
 
 namespace ClassStudentScoreReport_P
 {
@@ -69,5 +71,25 @@ namespace ClassStudentScoreReport_P
         }
 
 
+        /// <summary>
+        /// 取得缺曠資料
+        /// </summary>
+        /// <param name="SchoolYear"></param>
+        /// <param name="Semester"></param>
+        /// <returns></returns>
+        public static Dictionary<string, AbsenceObj> GetStudAbsenceDict(int SchoolYear, int Semester)
+        {
+            Dictionary<string, AbsenceObj> retVal = new Dictionary<string, AbsenceObj>();
+            AccessHelper accessHelper = new AccessHelper();
+            string query = " school_year=" + SchoolYear + " and semester=" + Semester;
+            List<AbsenceObj> data= accessHelper.Select<AbsenceObj>(query);
+            foreach (AbsenceObj ao in data)
+            {
+                string sid = ao.RefStudentId.ToString();
+                if (!retVal.ContainsKey(sid))
+                    retVal.Add(sid, ao);
+            }
+            return retVal;
+        }
     }
 }

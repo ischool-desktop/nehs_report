@@ -45,9 +45,14 @@ namespace ClassStudentScoreReport_P.DAO
         /// <returns></returns>
         public static Dictionary<string, List<ExamScore>> GetStudentExamScoreDictByStudentIDList(List<string> StudentIDList,int SchoolYear,int Semester)
         {
+            
             Dictionary<string, List<ExamScore>> retVal = new Dictionary<string, List<ExamScore>>();
+
+            // 取得評量比例
+            Dictionary<string, decimal> CourseTemplaePDict = QueryData.GetCourseExamTemplatePDict(SchoolYear, Semester);
+
             QueryHelper qh1 = new QueryHelper();
-            string query1 = "select ref_student_id as sid,subject as subject_name,domain as domain_name,exam_name,sce_take.extension as extension from sc_attend inner join sce_take on sc_attend.id=sce_take.ref_sc_attend_id inner join exam on sce_take.ref_exam_id=exam.id inner join course on sc_attend.ref_course_id=course.id where ref_student_id in(" + string.Join(",", StudentIDList.ToArray()) + ") and course.school_year=" + SchoolYear + " and semester=" + Semester + " order by sid,domain_name,subject_name,exam_name";
+            string query1 = "select ref_student_id as sid,subject as subject_name,domain as domain_name,exam_name,sce_take.extension as extension,course.id as courseid from sc_attend inner join sce_take on sc_attend.id=sce_take.ref_sc_attend_id inner join exam on sce_take.ref_exam_id=exam.id inner join course on sc_attend.ref_course_id=course.id where ref_student_id in(" + string.Join(",", StudentIDList.ToArray()) + ") and course.school_year=" + SchoolYear + " and semester=" + Semester + " order by sid,domain_name,subject_name,exam_name";
             DataTable dt1 = qh1.Select(query1);
             StringBuilder sb = new StringBuilder();
             foreach (DataRow dr1 in dt1.Rows)
@@ -67,6 +72,12 @@ namespace ClassStudentScoreReport_P.DAO
 
                 es.ExamName = dr1["exam_name"].ToString();
 
+                es.CourseID = dr1["courseid"].ToString();
+
+                // 設定定期評量比例
+                if (CourseTemplaePDict.ContainsKey(es.CourseID))
+                    es.SetScoreP(CourseTemplaePDict[es.CourseID]);
+
                 string extension = "";
                 if (dr1["extension"] != null)
                 {
@@ -84,14 +95,14 @@ namespace ClassStudentScoreReport_P.DAO
                             {
                                 decimal ss;
                                 if (decimal.TryParse(elm.Element("Score").Value, out ss))
-                                    es.Score = ss;                                
+                                    es.SetScore(ss);
                             }
 
                             if (elm.Element("AssignmentScore") != null)
                             {
                                 decimal ass;
                                 if (decimal.TryParse(elm.Element("AssignmentScore").Value, out ass))
-                                    es.AssignmentScore = ass;
+                                    es.SetAssignmentScore(ass);
                             }
                         }
                     }
@@ -106,6 +117,34 @@ namespace ClassStudentScoreReport_P.DAO
             }
 
             return retVal;                 
+        }
+
+        /// <summary>
+        /// 取得課程評分樣版比例
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<string, decimal> GetCourseExamTemplatePDict(int SchoolYear,int Semester)
+        {
+            Dictionary<string, decimal> retVal = new Dictionary<string, decimal>();
+            QueryHelper qh = new QueryHelper();
+            string query = @"select course.id as cid, CAST(regexp_replace( xpath_string(exam_template.extension,'/Extension/ScorePercentage'), '^$', '0') as integer) as ScorePercentage  from course inner join exam_template on course.ref_exam_template_id=exam_template.id where course.school_year="+SchoolYear+" and course.semester="+Semester;
+            DataTable dt = qh.Select(query);
+            foreach (DataRow dr in dt.Rows)
+            {
+                string cid = dr["cid"].ToString();
+                decimal ssp;
+                decimal sp = 50;
+
+                // 設定的定期評量
+                if (dr["scorepercentage"] != null)
+                {
+                    if (decimal.TryParse(dr["scorepercentage"].ToString(), out ssp))
+                        sp = ssp;
+                }
+                if (!retVal.ContainsKey(cid))
+                    retVal.Add(cid, sp);            
+            }
+            return retVal;        
         }
     }
 }
