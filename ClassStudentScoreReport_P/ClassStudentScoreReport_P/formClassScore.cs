@@ -48,7 +48,7 @@ namespace ClassStudentScoreReport_P
                 if (wbe != null)
                 {
                     // 儲存資料
-                    Utiltiy.CompletedXls("學生成績總表", wbe);
+                    Utiltiy.CompletedXls("學期成績總表", wbe);
                 }
                 else
                     FISCA.Presentation.Controls.MsgBox.Show("產生 Excel 檔案發生錯誤");
