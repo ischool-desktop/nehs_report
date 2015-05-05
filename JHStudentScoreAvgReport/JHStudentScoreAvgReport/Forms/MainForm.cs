@@ -76,6 +76,26 @@ namespace JHStudentScoreAvgReport.Forms
                 }
             }
             _bgWork.ReportProgress(10);
+
+            // 取得學習歷程
+            Dictionary<string, List<string>> studSemsHisDict = new Dictionary<string, List<string>>();
+
+            List<JHSemesterHistoryRecord> shisList = JHSemesterHistory.SelectByStudentIDs(_StudentIDList);
+            foreach (JHSemesterHistoryRecord shRec in shisList)
+            {
+                if (!studSemsHisDict.ContainsKey(shRec.RefStudentID))
+                    studSemsHisDict.Add(shRec.RefStudentID, new List<string>());
+
+                foreach (K12.Data.SemesterHistoryItem shi in shRec.SemesterHistoryItems)
+                {
+                    string sh = shi.SchoolYear + "_" + shi.Semester;
+
+                    if (!studSemsHisDict[shRec.RefStudentID].Contains(sh))
+                        studSemsHisDict[shRec.RefStudentID].Add(sh);
+                }            
+            }
+
+
             // 取得成績(科目、領域)
             List<JHSemesterScoreRecord> StudScoreList = JHSemesterScore.SelectByStudentIDs(_StudentIDList);
             foreach (JHSemesterScoreRecord ss in StudScoreList)
@@ -101,14 +121,18 @@ namespace JHStudentScoreAvgReport.Forms
                         // 分項
                         if (_StudentSemesterScoreDict.ContainsKey(studID))
                         {
-                            _ClassStudentScoreDict[className][studID].AddEnteryScore("智育", Cal.CalEntryAvgScore("學業",_StudentSemesterScoreDict[studID]));
+                            if(studSemsHisDict.ContainsKey(studID))
+                                _ClassStudentScoreDict[className][studID].AddEnteryScore("智育", Cal.CalEntryAvgScore("學業",_StudentSemesterScoreDict[studID],studSemsHisDict[studID]));
                         }
 
                         // 科目
                         if (_StudentSemesterScoreDict.ContainsKey(studID))
                         {
-                            _ClassStudentScoreDict[className][studID].AddEnteryScore("體育", Cal.CalSubjGroupAvgScore(SubjNameList2, _StudentSemesterScoreDict[studID]));
-                            _ClassStudentScoreDict[className][studID].AddEnteryScore("美育", Cal.CalSubjGroupAvgScore(SubjNameList3, _StudentSemesterScoreDict[studID]));
+                            if (studSemsHisDict.ContainsKey(studID))
+                            {
+                                _ClassStudentScoreDict[className][studID].AddEnteryScore("體育", Cal.CalSubjGroupAvgScore(SubjNameList2, _StudentSemesterScoreDict[studID],studSemsHisDict[studID]));
+                                _ClassStudentScoreDict[className][studID].AddEnteryScore("美育", Cal.CalSubjGroupAvgScore(SubjNameList3, _StudentSemesterScoreDict[studID],studSemsHisDict[studID]));
+                            }
                         }
                     }
                 }
@@ -261,6 +285,7 @@ namespace JHStudentScoreAvgReport.Forms
             txtScore2.Text = _UserConfig.Score2Text;
             txtScore3.Text = _UserConfig.Score3Text;
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine("學生在校期間，學生學期歷程內必須有相對學年度學期。");
             sb.AppendLine("智育：讀取學生各學期學習領域成績(七大學習領域)，成績計算使用算數平均。");
             sb.AppendLine("體育、美育：讀取各學期科目成績，科目名稱1個以上請用,相隔，成績計算使用加權平均。");
             sb.AppendLine("總分：智育、體育、美育，分數加總。");
